@@ -1,3 +1,4 @@
+// Select DOM elements related to player controls and playlist display
 const playlistSongs = document.getElementById("playlist-songs");
 const playButton = document.getElementById("play");
 const pauseButton = document.getElementById("pause");
@@ -5,6 +6,7 @@ const nextButton = document.getElementById("next");
 const previousButton = document.getElementById("previous");
 const shuffleButton = document.getElementById("shuffle");
 
+// Define the full list of songs available in the playlist
 const allSongs = [
   {
     id: 0,
@@ -78,87 +80,91 @@ const allSongs = [
   },
 ];
 
+// Create audio object for song playback
 const audio = new Audio();
+
+// Define user data to track playlist state and currently playing song
 let userData = {
   songs: [...allSongs],
   currentSong: null,
   songCurrentTime: 0,
 };
 
+// Function to play a song by its ID
 const playSong = (id) => {
-  const song = userData?.songs.find((song) => song.id === id);
+  const song = userData?.songs.find((song) => song.id === id); // Find song by ID
   audio.src = song.src;
   audio.title = song.title;
 
+  // Reset playback time if switching to a different song
   if (userData?.currentSong === null || userData?.currentSong.id !== song.id) {
     audio.currentTime = 0;
   } else {
-    audio.currentTime = userData?.songCurrentTime;
+    audio.currentTime = userData?.songCurrentTime; // Resume from previous time
   }
+
   userData.currentSong = song;
   playButton.classList.add("playing");
 
-  highlightCurrentSong();
-  setPlayerDisplay();
-  setPlayButtonAccessibleText();
-  audio.play();
+  highlightCurrentSong(); // Visually highlight currently playing song
+  setPlayerDisplay(); // Show song info in player
+  setPlayButtonAccessibleText(); // Update ARIA label for accessibility
+  audio.play(); // Start audio playback
 };
 
+// Function to pause the currently playing song
 const pauseSong = () => {
-  userData.songCurrentTime = audio.currentTime;
-  
+  userData.songCurrentTime = audio.currentTime; // Save current time
   playButton.classList.remove("playing");
-  audio.pause();
+  audio.pause(); // Pause audio
 };
 
+// Function to play the next song in the playlist
 const playNextSong = () => {
   if (userData?.currentSong === null) {
-    playSong(userData?.songs[0].id);
+    playSong(userData?.songs[0].id); // Start from beginning if no song is playing
   } else {
     const currentSongIndex = getCurrentSongIndex();
     const nextSong = userData?.songs[currentSongIndex + 1];
-
-    playSong(nextSong.id);
+    playSong(nextSong.id); // Play next song
   }
 };
 
+// Function to play the previous song in the playlist
 const playPreviousSong = () => {
    if (userData?.currentSong === null) return;
-   else {
-    const currentSongIndex = getCurrentSongIndex();
-    const previousSong = userData?.songs[currentSongIndex - 1];
-
-    playSong(previousSong.id);
-   }
+   const currentSongIndex = getCurrentSongIndex();
+   const previousSong = userData?.songs[currentSongIndex - 1];
+   playSong(previousSong.id); // Play previous song
 };
 
+// Function to shuffle songs in the playlist
 const shuffle = () => {
-  userData?.songs.sort(() => Math.random() - 0.5);
+  userData?.songs.sort(() => Math.random() - 0.5); // Shuffle array randomly
   userData.currentSong = null;
   userData.songCurrentTime = 0;
-
-  renderSongs(userData?.songs);
-  pauseSong();
+  renderSongs(userData?.songs); // Re-render playlist
+  pauseSong(); // Reset playback
   setPlayerDisplay();
   setPlayButtonAccessibleText();
 };
 
+// Function to delete a song from the playlist by its ID
 const deleteSong = (id) => {
   if (userData?.currentSong?.id === id) {
     userData.currentSong = null;
     userData.songCurrentTime = 0;
-
-    pauseSong();
+    pauseSong(); // Pause if deleted song was playing
     setPlayerDisplay();
   }
 
-  userData.songs = userData?.songs.filter((song) => song.id !== id);
-  renderSongs(userData?.songs); 
-  highlightCurrentSong(); 
-  setPlayButtonAccessibleText(); 
-
+  userData.songs = userData?.songs.filter((song) => song.id !== id); // Remove song
+  renderSongs(userData?.songs);
+  highlightCurrentSong();
+  setPlayButtonAccessibleText();
 };
 
+// Update the player UI with the current song's title and artist
 const setPlayerDisplay = () => {
   const playingSong = document.getElementById("player-song-title");
   const songArtist = document.getElementById("player-song-artist");
@@ -169,19 +175,19 @@ const setPlayerDisplay = () => {
   songArtist.textContent = currentArtist ? currentArtist : "";
 };
 
+// Visually indicate the currently playing song in the playlist
 const highlightCurrentSong = () => {
   const playlistSongElements = document.querySelectorAll(".playlist-song");
-  const songToHighlight = document.getElementById(
-    `song-${userData?.currentSong?.id}`
-  );
+  const songToHighlight = document.getElementById(`song-${userData?.currentSong?.id}`);
 
   playlistSongElements.forEach((songEl) => {
-    songEl.removeAttribute("aria-current");
+    songEl.removeAttribute("aria-current"); // Remove highlight
   });
 
-  if (songToHighlight) songToHighlight.setAttribute("aria-current", "true");
+  if (songToHighlight) songToHighlight.setAttribute("aria-current", "true"); // Highlight current song
 };
 
+// Render the song list in the playlist
 const renderSongs = (array) => {
   const songsHTML = array
     .map((song)=> {
@@ -193,8 +199,7 @@ const renderSongs = (array) => {
           <span class="playlist-song-duration">${song.duration}</span>
       </button>
       <button onclick="deleteSong(${song.id})" class="playlist-song-delete" aria-label="Delete ${song.title}">
-          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="#4d4d62"/>
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M5.32587 5.18571C5.7107 4.90301 6.28333 4.94814 6.60485 5.28651L8 6.75478L9.39515 5.28651C9.71667 4.94814 10.2893 4.90301 10.6741 5.18571C11.059 5.4684 11.1103 5.97188 10.7888 6.31026L9.1832 7.99999L10.7888 9.68974C11.1103 10.0281 11.059 10.5316 10.6741 10.8143C10.2893 11.097 9.71667 11.0519 9.39515 10.7135L8 9.24521L6.60485 10.7135C6.28333 11.0519 5.7107 11.097 5.32587 10.8143C4.94102 10.5316 4.88969 10.0281 5.21121 9.68974L6.8168 7.99999L5.21122 6.31026C4.8897 5.97188 4.94102 5.4684 5.32587 5.18571Z" fill="white"/></svg>
+          <svg>...</svg>
         </button>
       </li>
       `;
@@ -203,6 +208,7 @@ const renderSongs = (array) => {
 
   playlistSongs.innerHTML = songsHTML;
 
+  // If no songs left, show reset button
   if (userData?.songs.length === 0) {
     const resetButton = document.createElement("button");
     const resetText = document.createTextNode("Reset Playlist");
@@ -213,75 +219,75 @@ const renderSongs = (array) => {
     playlistSongs.appendChild(resetButton);
 
     resetButton.addEventListener("click", () => {
-      userData.songs = [...allSongs];
-
-      renderSongs(sortSongs()); 
+      userData.songs = [...allSongs]; // Restore full list
+      renderSongs(sortSongs());
       setPlayButtonAccessibleText();
       resetButton.remove();
     });
-
-  };
-
+  }
 };
 
+// Set the accessible label on the play button
 const setPlayButtonAccessibleText = () => {
   const song = userData?.currentSong || userData?.songs[0];
-
   playButton.setAttribute(
     "aria-label",
     song?.title ? `Play ${song.title}` : "Play"
   );
 };
 
+// Get index of the currently playing song in the playlist
 const getCurrentSongIndex = () => userData?.songs.indexOf(userData?.currentSong);
 
+// Event listener: Play button
 playButton.addEventListener("click", () => {
-    if (userData?.currentSong === null) {
+  if (userData?.currentSong === null) {
     playSong(userData?.songs[0].id);
   } else {
     playSong(userData?.currentSong.id);
   }
 });
 
-pauseButton.addEventListener("click",  pauseSong);
+// Event listener: Pause button
+pauseButton.addEventListener("click", pauseSong);
 
+// Event listener: Next button
 nextButton.addEventListener("click", playNextSong);
 
+// Event listener: Previous button
 previousButton.addEventListener("click", playPreviousSong);
 
+// Event listener: Shuffle button
 shuffleButton.addEventListener("click", shuffle);
 
+// Event listener: When song ends, play next or reset player
 audio.addEventListener("ended", () => {
   const currentSongIndex = getCurrentSongIndex();
   const nextSongExists = userData?.songs[currentSongIndex + 1] !== undefined;
 
-    if (nextSongExists) {
-      playNextSong();
-    } else {
-      userData.currentSong = null;
-      userData.songCurrentTime = 0;  
-      pauseSong();
-      setPlayerDisplay();
-      highlightCurrentSong();
-      setPlayButtonAccessibleText();
-    }
+  if (nextSongExists) {
+    playNextSong();
+  } else {
+    userData.currentSong = null;
+    userData.songCurrentTime = 0;
+    pauseSong();
+    setPlayerDisplay();
+    highlightCurrentSong();
+    setPlayButtonAccessibleText();
+  }
 });
 
+// Sort songs alphabetically by title
 const sortSongs = () => {
-  userData?.songs.sort((a,b) => {
-    if (a.title < b.title) {
-      return -1;
-    }
-
-    if (a.title > b.title) {
-      return 1;
-    }
-
+  userData?.songs.sort((a, b) => {
+    if (a.title < b.title) return -1;
+    if (a.title > b.title) return 1;
     return 0;
   });
 
   return userData?.songs;
 };
 
+// Initial render of playlist and setup of play button accessibility
 renderSongs(sortSongs());
 setPlayButtonAccessibleText();
