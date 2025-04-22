@@ -11,29 +11,29 @@ const titleInput = document.getElementById("title-input");
 const dateInput = document.getElementById("date-input");
 const descriptionInput = document.getElementById("description-input");
 
-// 📦 Load saved tasks from localStorage or start with an empty array
+// Load saved tasks from localStorage or start with an empty array
 const taskData = JSON.parse(localStorage.getItem("data")) || [];
 
-// 📝 Keeps track of the task being edited
+// Keeps track of the task being edited
 let currentTask = {};
 
-// 🧼 Utility function: Removes special characters from strings
+// Utility function: Removes special characters from strings
 const removeSpecialChars = (val) => {
   return val.trim().replace(/[^A-Za-z0-9\-\s]/g, '');
 }
 
-// ➕📤 Handles both adding a new task and updating an existing one
+// Handles both adding a new task and updating an existing one
 const addOrUpdateTask = () => {
-  // ✅ Validation: Ensure title is not empty
+  // Validation: Ensure title is not empty
   if (!titleInput.value.trim()) {
     alert("Please provide a title");
     return;
   }
 
-  // 🔍 Find index of current task in array, if editing
+  // Find index of current task in array, if editing
   const dataArrIndex = taskData.findIndex((item) => item.id === currentTask.id);
 
-  // 🏗️ Create the task object
+  // Create the task object
   const taskObj = {
     id: `${removeSpecialChars(titleInput.value).toLowerCase().split(" ").join("-")}-${Date.now()}`, // unique ID
     title: removeSpecialChars(titleInput.value),
@@ -41,22 +41,22 @@ const addOrUpdateTask = () => {
     description: removeSpecialChars(descriptionInput.value),
   };
 
-  // 🧠 Decide if we're adding or updating
+  // Decide if we're adding or updating
   if (dataArrIndex === -1) {
     taskData.unshift(taskObj); // add new task to the beginning
   } else {
     taskData[dataArrIndex] = taskObj; // update existing task
   }
 
-  // 💾 Save updated tasks to localStorage
+  // Save updated tasks to localStorage
   localStorage.setItem("data", JSON.stringify(taskData));
 
-  // 🔁 Refresh task list and reset form
+  // Refresh task list and reset form
   updateTaskContainer();
   reset();
 };
 
-// 🧱 Builds the task UI list from taskData array
+// Builds the task UI list from taskData array
 const updateTaskContainer = () => {
   tasksContainer.innerHTML = ""; // Clear current list
 
@@ -73,7 +73,7 @@ const updateTaskContainer = () => {
   });
 };
 
-// ❌ Deletes a task
+// Deletes a task
 const deleteTask = (buttonEl) => {
   // Find task to delete
   const dataArrIndex = taskData.findIndex(
@@ -90,7 +90,7 @@ const deleteTask = (buttonEl) => {
   localStorage.setItem("data", JSON.stringify(taskData));
 };
 
-// ✏️ Load a task into the form for editing
+// Load a task into the form for editing
 const editTask = (buttonEl) => {
   const dataArrIndex = taskData.findIndex(
     (item) => item.id === buttonEl.parentElement.id
@@ -110,7 +110,7 @@ const editTask = (buttonEl) => {
   taskForm.classList.toggle("hidden");
 };
 
-// 🔄 Reset the form to default state
+// Reset the form to default state
 const reset = () => {
   addOrUpdateTaskBtn.innerText = "Add Task";
   titleInput.value = "";
@@ -120,17 +120,17 @@ const reset = () => {
   currentTask = {}; // clear the reference to any edited task
 };
 
-// 🧠 If there's data saved, load it on page load
+// If there's data saved, load it on page load
 if (taskData.length) {
   updateTaskContainer();
 }
 
-// 🪄 Show the form when Add Task button is clicked
+// Show the form when Add Task button is clicked
 openTaskFormBtn.addEventListener("click", () =>
   taskForm.classList.toggle("hidden")
 );
 
-// 🛑 Try to close form, but ask user to confirm if they made changes
+// Try to close form, but ask user to confirm if they made changes
 closeTaskFormBtn.addEventListener("click", () => {
   const formInputsContainValues =
     titleInput.value || dateInput.value || descriptionInput.value;
@@ -147,16 +147,16 @@ closeTaskFormBtn.addEventListener("click", () => {
   }
 });
 
-// 🙅 Cancel close dialog
+// Cancel close dialog
 cancelBtn.addEventListener("click", () => confirmCloseDialog.close());
 
-// ❌ Discard changes and reset form
+// Discard changes and reset form
 discardBtn.addEventListener("click", () => {
   confirmCloseDialog.close();
   reset();
 });
 
-// 💾 Submit form (add/update task)
+// Submit form (add/update task)
 taskForm.addEventListener("submit", (e) => {
   e.preventDefault(); // prevent page reload
   addOrUpdateTask();
