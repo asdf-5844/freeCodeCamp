@@ -27,7 +27,7 @@ dateOptionsSelectElement.addEventListener("change", () => {
     // Format: year-month-day
     case "yyyy-mm-dd":
       currentDateParagraph.textContent = formattedDate
-        .split("-")         // Split the date string into an array.
+        .split("-")         // Split the date string into an array, REMOVING THE HYPHENS OF THE ORIGINAL
         .reverse()          // Reverse the array to get [year, month, day].
         .join("-");         // Join it back into a string with hyphens.
       break;
