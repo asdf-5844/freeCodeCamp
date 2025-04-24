@@ -8,25 +8,27 @@ def vigenere(message, key, direction=1):
 
     for char in message.lower():
 
-        # Append any non-letter character to the message
+        # Keep non-alphabet characters unchanged
         if not char.isalpha():
             final_message += char
-        else:        
-            # Find the right key character to encode/decode
+        else:
+            # Get corresponding key character based on position
             key_char = key[key_index % len(key)]
             key_index += 1
 
-            # Define the offset and the encrypted/decrypted letter
+            # Shift the character by key offset (positive for encrypt, negative for decrypt)
             offset = alphabet.index(key_char)
             index = alphabet.find(char)
-            new_index = (index + offset*direction) % len(alphabet)
+            new_index = (index + offset * direction) % len(alphabet)
             final_message += alphabet[new_index]
     
     return final_message
 
+# Wrapper for encryption (direction = 1)
 def encrypt(message, key):
     return vigenere(message, key)
     
+# Wrapper for decryption (direction = -1)
 def decrypt(message, key):
     return vigenere(message, key, -1)
 
