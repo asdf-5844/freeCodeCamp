@@ -1,3 +1,5 @@
+// HELLO WORLD JAVASCRIPT THIS WAS MY FIRST CODING IN THE LANGUAGE
+
 const character = "!";
 const count = 10;
 const rows = [];
