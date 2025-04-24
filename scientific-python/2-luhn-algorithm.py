@@ -1,4 +1,4 @@
-def verify_card_number(card_number):
+    def verify_card_number(card_number):
     sum_of_odd_digits = 0
     card_number_reversed = card_number[::-1]  # Reverse the card number
     odd_digits = card_number_reversed[::2]    # Take every 2nd digit from the end (original odd positions)
@@ -30,6 +30,8 @@ main()
 
 # This is the Luhn Algorithm, an algorithm that verifies the validity of identification numbers like credit card numbers.
 
-'''The Luhn algorithm checks if a number is valid by doubling every second digit from the right, 
+'''
+The Luhn algorithm checks if a number is valid by doubling every second digit from the right, 
 summing all digits (adjusting those over 9), 
-and verifying that the total is divisible by 10.'''
+and verifying that the total is divisible by 10.
+'''
