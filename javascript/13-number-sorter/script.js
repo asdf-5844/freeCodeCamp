@@ -21,6 +21,7 @@ const sortInputArray = (event) => {
 
 // Update displayed values in the UI with sorted array
 const updateUI = (array = []) => {
+  // Num is the actual number in the sorted array, i gets the index of each number from the array
   array.forEach((num, i) => {
     const outputValueNode = document.getElementById(`output-value-${i}`);
     outputValueNode.innerText = num;
