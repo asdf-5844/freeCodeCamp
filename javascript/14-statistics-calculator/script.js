@@ -50,11 +50,10 @@ const getRange = (array) => {
 const getVariance = (array) => {
   const mean = getMean(array);
 
-  // Sum of squared differences from the mean
+  // The sum of squared differences from the mean
   const variance = array.reduce((acc, el) => {
     const difference = el - mean;
     const squared = difference ** 2;
-    // Add them, then the mean
     return acc + squared;
   }, 0) / array.length;
 
