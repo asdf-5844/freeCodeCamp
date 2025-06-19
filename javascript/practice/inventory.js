@@ -39,6 +39,7 @@ function removeProduct(name, quantity) {
     product.quantity -= quantity;
 
     if (product.quantity === 0) {
+      // Deletes the product at its index
       inventory.splice(index, 1);
     }
 
